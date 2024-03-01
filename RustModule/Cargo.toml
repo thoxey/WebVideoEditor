@@ -1,5 +1,5 @@
 [package]
-name = "WebVideoEditor"
+name = "web_video_editor"
 version = "0.1.0"
 authors = ["thoxey"]
 edition = "2018"
