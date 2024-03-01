@@ -1,17 +1,29 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { onMounted } from 'vue';
+import HelloWorld from './components/HelloWorld.vue';
+import TheWelcome from './components/TheWelcome.vue';
+import init, { greet } from '../public/web_video_editor/web_video_editor.js';
+
+// Use onMounted lifecycle hook with <script setup>
+onMounted(async () => {
+  await init();
+  console.log('WASM module initialized');
+});
+
+// Define a method for <script setup>
+const sayHello = () => {
+  greet();
+};
 </script>
 
 <template>
   <header>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
+      <button @click="sayHello">Say Hello</button>
     </div>
   </header>
-
   <main>
     <TheWelcome />
   </main>
