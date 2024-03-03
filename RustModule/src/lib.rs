@@ -3,12 +3,21 @@ mod web_gl_services;
 
 use wasm_bindgen::prelude::*;
 use web_sys::{WebGl2RenderingContext, WebGlProgram, WebGlShader};
+use std::sync::Mutex;
+use lazy_static::lazy_static;
+
+extern crate lazy_static;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
+lazy_static!
+{
+    static ref SERVICE_REGISTRY: Mutex<utils::ServiceRegistry> = Mutex::new(utils::ServiceRegistry::new());
+}
 
 #[wasm_bindgen]
 extern {
@@ -23,7 +32,7 @@ pub fn greet() {
 #[wasm_bindgen]
 pub fn init_web_gl() -> Result<(), JsValue>
 {
-    let mut registry = utils::ServiceRegistry::new();
+    let mut registry = SERVICE_REGISTRY.lock().unwrap();
 
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("canvas").unwrap();
@@ -31,8 +40,8 @@ pub fn init_web_gl() -> Result<(), JsValue>
 
     let context = canvas.get_context("webgl2")?.unwrap().dyn_into::<WebGl2RenderingContext>()?; //the ? operator is used to propagate errors up the call stack
 
-    let contextService = web_gl_services::ContextService::new(context);
-    registry.add_service(contextService);
+    let context_service = web_gl_services::ContextService::new(context);
+    registry.add_service(context_service);
 
     let vert_shader = compile_shader(&context, WebGl2RenderingContext::VERTEX_SHADER,
         r##"#version 300 es

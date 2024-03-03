@@ -14,23 +14,27 @@ pub fn set_panic_hook() {
 
 
 
-pub(crate) struct ServiceRegistry {
+pub(crate) struct ServiceRegistry
+{
     services: HashMap<TypeId, Box<dyn Any>>, // Box is like a unique_ptr in C++
 }
 
-impl ServiceRegistry {
-    pub(crate) fn new() -> Self {
+impl ServiceRegistry
+{
+    pub(crate) fn new() -> Self
+    {
         ServiceRegistry {
             services: HashMap::new(),
         }
     }
 
-    pub(crate) fn add_service<T: Any + 'static>(&mut self, service: T) {
+    pub(crate) fn add_service<T: Any + 'static>(&mut self, service: T)
+    {
         self.services.insert(TypeId::of::<T>(), Box::new(service));
     }
 
-    fn get_service<T: Any + 'static>(&self) -> Option<&T> {
-        self.services.get(&TypeId::of::<T>())
-            .and_then(|boxed_any| boxed_any.downcast_ref::<T>())
+    pub(crate) fn get_service<T: Any + 'static>(&self) -> Option<&T>
+    {
+        self.services.get(&TypeId::of::<T>()).and_then(|boxed_any| boxed_any.downcast_ref::<T>())
     }
 }
