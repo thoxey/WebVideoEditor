@@ -2,7 +2,7 @@
 import { onMounted } from 'vue';
 import HelloWorld from './components/HelloWorld.vue';
 import TheWelcome from './components/TheWelcome.vue';
-import init, { greet, init_web_gl } from '../public/web_video_editor/web_video_editor.js';
+import init, { greet, WebGLResources } from '../public/web_video_editor/web_video_editor.js';
 
 // Use onMounted lifecycle hook with <script setup>
 onMounted(async () => {
@@ -16,7 +16,9 @@ const sayHello = () => {
 };
 
 const startWebGL = () => {
-  init_web_gl();
+  const webGLResources = new WebGLResources("canvas");
+  webGLResources.setup_resources();
+  webGLResources.draw();
 };
 </script>
 
